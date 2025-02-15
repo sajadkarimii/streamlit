@@ -10,7 +10,7 @@ class crawl:
         self.title = []
         self.news = []
 
-        for i in range(1,2):
+        for i in range(1,11):
           page = requests.get(link + f"{i}")
           soup = BeautifulSoup(page.content ,'html.parser')
           news = soup.find_all('article',{'class':'list-item'})

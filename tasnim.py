@@ -41,7 +41,7 @@ class crawl:
             if cursor.fetchone():
                 print(f"Database '{'News'}' already exists.")
             else:
-                cursor.execute("CREATE DATABASE 'News' ;")
+                cursor.execute("CREATE DATABASE News;")
                 print(f"Database 'News' created successfully.")
             # Create News table if not already exist
             connection = f'DRIVER={driver};SERVER={server};DATABASE=News;Trusted_Connection=yes;'

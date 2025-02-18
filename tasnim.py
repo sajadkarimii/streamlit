@@ -15,8 +15,7 @@ class crawl:
           soup = BeautifulSoup(page.content ,'html.parser')
           news = soup.find_all('article',{'class':'list-item'})
           for new in news:
-            self.crawling(new)
-            
+            self.crawling(new)        
         self.save()
 
     def crawling(self , source):
@@ -25,7 +24,7 @@ class crawl:
         except :
             self.title.append(None)
         try :
-            self.news.append(source.find('article',{'class':'list-item'}).find('h4',{'class':'lead'}).text.replace('\u200c',' ').strip())
+            self.news.append(source.find('h4',{'class':'lead'}).text.replace('\u200c',' ').strip())
         except :
             self.news.append(None)
     

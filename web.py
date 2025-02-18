@@ -1,5 +1,6 @@
 import streamlit as st
 import random
+import pyodbc
 
 st.set_page_config(layout="wide")
 
@@ -96,7 +97,32 @@ with Game:
             if st.button("Right"):
                 st.write(Guesshand('Right'))
                 
-                
+with News:
+    server = '.'
+    driver = '{ODBC Driver 17 for SQL Server}'
+    try:
+        # Create News Database if not already exist
+        connection = f'DRIVER={driver};SERVER={server};DATABASE=News;Trusted_Connection=yes;'
+        conn = pyodbc.connect(connection, autocommit=True)
+        cursor = conn.cursor()
+        query = "SELECT Titles,Text FROM News"  # Replace with your table and column names
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        for row in rows:
+            st.title(row.Titles)
+            st.write(row.Text)
+            st.write("___")
+    except pyodbc.Error as e:
+        print("An error occurred:", e)
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'conn' in locals():
+            conn.close()
+    
+    
+    
+                    
 with BI:
     col1 , col2 ,col3 = st.columns(3)
     with col1:
@@ -105,3 +131,5 @@ with BI:
         st.button("Power Bi report")
     with col3:
         pass
+
+

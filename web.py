@@ -1,11 +1,20 @@
 import streamlit as st
 import random
 import pyodbc
+import pandas as pd
+import joblib
 
 st.set_page_config(layout="wide")
 
 st.title("Welcome :D")
     
+model = joblib.load('random_forest_model.pkl')
+    
+work = pd.read_csv('Working Professional or Student.csv')
+pro = pd.read_csv('Profession.csv')
+deg = pd.read_csv('Degree.csv')
+sui = pd.read_csv('Have you ever had suicidal thoughts _.csv')
+
 def RPS(choise):
     rp = random.randint(1,3)
     if choise == "Rock":
@@ -119,17 +128,50 @@ with News:
             cursor.close()
         if 'conn' in locals():
             conn.close()
-    
-    
-    
                     
 with BI:
     col1 , col2 ,col3 = st.columns(3)
     with col1:
         pass
     with col2:
-        st.button("Power Bi report")
+        st.link_button("Power Bi report","http://sajad/Reports/powerbi/Epl")
     with col3:
         pass
 
+with ML:
+    with st.form('ML'):
+        col1 , col2 ,col3 ,col4,col5= st.columns(5)
+        with col1:
+            age = st.number_input("Enter your age :",0,120,step=1)
+        with col2:
+            working = st.selectbox("Select your status :",options=(work['Working Professional or Student'].unique()))
+        with col3:
+            profession = st.selectbox("Are you student :",options=(pro['Profession'].unique()))
+        with col4:
+            wpressure = st.number_input("Enter your working pressure (1 , 5):",1,5,step=1)
+        with col5:
+            degree = st.selectbox("What's your Degree :",options=(deg['Degree'].unique()))
+        col6 , col7 ,col8 ,col9= st.columns(4)
+        with col6:
+            JSatisfaction = st.number_input("Enter your Job Satisfaction (1 , 5):",1,5,step=1)
+        with col7:
+            suicide = st.selectbox("Have you ever had suicidal thoughts ? :",options=(sui['Have you ever had suicidal thoughts ?'].unique()))
+        with col8:
+            WSHours = st.number_input("Enter your Work/Study Hours :",0,24,step=1)
+        with col9:
+            FStress = st.number_input("Enter your Financial Stress (1 , 5):",1,5,step=1)
+        data = [[age,work['encoded'][work['Working Professional or Student'] == working].iloc[0],pro['encoded'][pro['Profession'] == profession].iloc[0]
+                ,wpressure,deg['encoded'][deg['Degree'] == degree].iloc[0],JSatisfaction,sui['encoded'][sui['Have you ever had suicidal thoughts ?'] == suicide].iloc[0],WSHours,FStress]]
+        if st.form_submit_button("Submit"):
+            predict = model.predict(data)
+            if predict:
+                st.title("You are most likely depressed :(((")
+            else : 
+                st.title("Fortunately, you are not depressed :)))")
 
+with Description:
+    st.title("توضیحات")
+    st.write("صفحه اول سه بازی برای سرگرمی درست شده است")
+    st.write("صفحه دوم اخبار به روز ایرانو جهان را میتوانید مشاهده کنید")
+    st.write("صفحه سوم دارای یک لینک برای مشاهده یک داشبورد مدیریتی پاور بی ای است")
+    st.write('صفحه چهارم دارای یک هوش مصنوعی برای دریافت اطلاعات مورد نیاز است')             
